@@ -43,5 +43,7 @@ public class AddModuleCommand extends Command {
 
     //TODO
     @Override
-    public CommandResult execute(Model model, CommandHistory history) { return null; }
+    public CommandResult execute(Model model, CommandHistory history) {
+        return null;
+    }
 }
