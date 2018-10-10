@@ -19,9 +19,9 @@ public class ModuleInfo {
 
     private int creditCount;
 
-    private Module[] preclusions;
+    private ModuleInfo[] preclusions;
 
-    private Module[] prerequisites;
+    private ModuleInfo[] prerequisites;
 
     /**
      * Creates a new {@code ModuleInfo}.
@@ -46,7 +46,7 @@ public class ModuleInfo {
      * @param prerequisites The prerequisites
      */
     public ModuleInfo(String code, String name, ModuleType[] possibleTypes,
-                      int creditCount, Module[] preclusions, Module[] prerequisites) {
+                      int creditCount, ModuleInfo[] preclusions, ModuleInfo[] prerequisites) {
         this.code = code;
         this.name = name;
         this.possibleTypes = possibleTypes;
@@ -71,11 +71,11 @@ public class ModuleInfo {
         return creditCount;
     }
 
-    public Module[] getPreclusions() {
+    public ModuleInfo[] getPreclusions() {
         return preclusions;
     }
 
-    public Module[] getPrerequisites() {
+    public ModuleInfo[] getPrerequisites() {
         return prerequisites;
     }
 }
