@@ -1,6 +1,6 @@
 package seedu.planner.model.module;
 
-//@@author GabrielYik
+//@@author GabrielYik @@author rongjiecomputer
 
 import java.util.Arrays;
 
