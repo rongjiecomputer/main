@@ -13,6 +13,7 @@ import seedu.planner.commons.events.model.AddressBookChangedEvent;
 import seedu.planner.commons.events.storage.DataSavingExceptionEvent;
 import seedu.planner.commons.exceptions.DataConversionException;
 import seedu.planner.model.ReadOnlyAddressBook;
+import seedu.planner.model.module.ModuleInfo;
 import seedu.planner.model.UserPrefs;
 
 /**
@@ -22,11 +23,14 @@ public class StorageManager extends ComponentManager implements Storage {
 
     private static final Logger logger = LogsCenter.getLogger(StorageManager.class);
     private AddressBookStorage addressBookStorage;
+    private ModuleInfoStorage moduleInfoStorage;
     private UserPrefsStorage userPrefsStorage;
 
 
-    public StorageManager(AddressBookStorage addressBookStorage, UserPrefsStorage userPrefsStorage) {
+    public StorageManager(AddressBookStorage addressBookStorage, ModuleInfoStorage moduleInfoStorage,
+                          UserPrefsStorage userPrefsStorage) {
         super();
+        this.moduleInfoStorage = moduleInfoStorage;
         this.addressBookStorage = addressBookStorage;
         this.userPrefsStorage = userPrefsStorage;
     }
@@ -48,6 +52,14 @@ public class StorageManager extends ComponentManager implements Storage {
         userPrefsStorage.saveUserPrefs(userPrefs);
     }
 
+    // ================ ModuleInfo methods ===============================
+
+
+    public Path getModuleInfoFilePath() {return moduleInfoStorage.getModuleInfoFilePath(); }
+
+    public Optional<ModuleInfo[]> readModuleInfo() throws DataConversionException, IOException {
+        return moduleInfoStorage.readModuleInfo();
+    }
 
     // ================ AddressBook methods ==============================
 

@@ -13,6 +13,7 @@ import seedu.planner.commons.core.ComponentManager;
 import seedu.planner.commons.core.LogsCenter;
 import seedu.planner.commons.events.model.AddressBookChangedEvent;
 import seedu.planner.model.module.Module;
+import seedu.planner.model.module.ModuleInfo;
 import seedu.planner.model.person.Person;
 import seedu.planner.model.util.SampleModulesUtil;
 
@@ -24,27 +25,29 @@ public class ModelManager extends ComponentManager implements Model {
 
     private final VersionedAddressBook versionedAddressBook;
     private final FilteredList<Person> filteredPersons;
+    private final ModuleInfo[] moduleInfo;
     private final FilteredList<Module> filteredTakenModules;
     private final FilteredList<Module> filteredAvailableModules;
 
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
-    public ModelManager(ReadOnlyAddressBook addressBook, UserPrefs userPrefs) {
+    public ModelManager(ReadOnlyAddressBook addressBook, ModuleInfo[] moduleInfo, UserPrefs userPrefs) {
         super();
-        requireAllNonNull(addressBook, userPrefs);
+        requireAllNonNull(addressBook, moduleInfo, userPrefs);
 
         logger.fine("Initializing with planner book: " + addressBook + " and user prefs " + userPrefs);
 
         versionedAddressBook = new VersionedAddressBook(addressBook);
         filteredPersons = new FilteredList<>(versionedAddressBook.getPersonList());
+        this.moduleInfo = moduleInfo;
         //TODO: initialise filteredModules properly
         filteredTakenModules = new FilteredList<>(SampleModulesUtil.genModules(3));
         filteredAvailableModules = new FilteredList<>(SampleModulesUtil.genModules(2));
     }
 
     public ModelManager() {
-        this(new AddressBook(), new UserPrefs());
+        this(new AddressBook(), new ModuleInfo[]{}, new UserPrefs());
     }
 
     @Override
@@ -106,6 +109,12 @@ public class ModelManager extends ComponentManager implements Model {
         requireNonNull(predicate);
         filteredPersons.setPredicate(predicate);
     }
+
+    // @@author rongjiecomputer
+    public ModuleInfo[] getModuleInfo() {
+        return moduleInfo;
+    }
+    // @@author
 
     //=========== Filtered Module List Accessors =============================================================
     //@@author GabrielYik
