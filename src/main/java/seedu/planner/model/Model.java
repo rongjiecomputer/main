@@ -60,11 +60,11 @@ public interface Model {
 
     //TODO: confirm filtered or sorted or both
     /** Returns an unmodifiable view of the filtered module list */
-    ObservableList<Module> getFilteredTakenModuleListFromSemester(int semesterIndex);
+    ObservableList<Module> getFilteredTakenModuleList(int index);
 
     //TODO: confirm filtered or sorted or both
     /** Returns an unmodifiable view of the filtered module list */
-    ObservableList<Module> getFilteredAvailableModuleListFromSemester(int semesterIndex);
+    ObservableList<Module> getFilteredAvailableModuleList(int index);
 
     //@@author
 

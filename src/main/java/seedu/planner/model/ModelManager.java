@@ -14,7 +14,6 @@ import seedu.planner.commons.core.LogsCenter;
 import seedu.planner.commons.events.model.AddressBookChangedEvent;
 import seedu.planner.model.module.Module;
 import seedu.planner.model.person.Person;
-import seedu.planner.model.util.SampleModulePlannerUtil;
 
 /**
  * Represents the in-memory model of the planner book data.
@@ -22,11 +21,13 @@ import seedu.planner.model.util.SampleModulePlannerUtil;
 public class ModelManager extends ComponentManager implements Model {
     private static final Logger logger = LogsCenter.getLogger(ModelManager.class);
 
+    // TODO: Delete this
     private final VersionedAddressBook versionedAddressBook;
     private final FilteredList<Person> filteredPersons;
 
     private final VersionedModulePlanner versionedModulePlanner;
 
+    // TODO: Delete this
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
@@ -39,18 +40,32 @@ public class ModelManager extends ComponentManager implements Model {
         versionedAddressBook = new VersionedAddressBook(addressBook);
         filteredPersons = new FilteredList<>(versionedAddressBook.getPersonList());
 
-        //@@author GabrielYik
+        versionedModulePlanner = new VersionedModulePlanner(new ModulePlanner());
+    }
 
-        //TODO: initialise ModulePlanner properly
-        ModulePlanner modulePlanner = SampleModulePlannerUtil.genModulePlanner();
+    //@@author Hilda-Ang
+
+    /**
+     * Initializes a ModelManager with the given modulePlanner and userPrefs.
+     */
+    public ModelManager(ReadOnlyModulePlanner modulePlanner, UserPrefs userPrefs) {
+        super();
+        requireAllNonNull(modulePlanner, userPrefs);
+
+        logger.fine("Initializing with planner: " + modulePlanner + " and user prefs " + userPrefs);
+
         versionedModulePlanner = new VersionedModulePlanner(modulePlanner);
 
-        //@@author
+        //TODO: Delete this
+        this.versionedAddressBook = new VersionedAddressBook(new AddressBook());
+        filteredPersons = new FilteredList<>(versionedAddressBook.getPersonList());
     }
 
     public ModelManager() {
-        this(new AddressBook(), new UserPrefs());
+        this(new ModulePlanner(), new UserPrefs());
     }
+
+    //@@author
 
     @Override
     public void resetData(ReadOnlyAddressBook newData) {
@@ -116,15 +131,15 @@ public class ModelManager extends ComponentManager implements Model {
     //@@author GabrielYik
 
     @Override
-    public ObservableList<Module> getFilteredTakenModuleListFromSemester(int index) {
+    public ObservableList<Module> getFilteredTakenModuleList(int index) {
         return FXCollections.unmodifiableObservableList(
-                versionedModulePlanner.getModulesAvailableFromSemester(index));
+                versionedModulePlanner.listModulesTaken(index));
     }
 
     @Override
-    public ObservableList<Module> getFilteredAvailableModuleListFromSemester(int index) {
+    public ObservableList<Module> getFilteredAvailableModuleList(int index) {
         return FXCollections.unmodifiableObservableList(
-                versionedModulePlanner.getModulesAvailableFromSemester(index));
+                versionedModulePlanner.listModulesAvailable(index));
     }
 
     //@@author
@@ -175,5 +190,4 @@ public class ModelManager extends ComponentManager implements Model {
         return versionedAddressBook.equals(other.versionedAddressBook)
                 && filteredPersons.equals(other.filteredPersons);
     }
-
 }
