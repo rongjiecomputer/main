@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import seedu.planner.logic.commands.ListModuleCommand;
 import seedu.planner.logic.parser.exceptions.ParseException;
+import seedu.planner.model.util.IndexUtil;
 
 //@@author Hilda-Ang
 
@@ -30,10 +31,10 @@ public class ListModuleCommandParser implements Parser<ListModuleCommand> {
             throw new ParseException(String.format(MESSAGE_INVALID_COMMAND_FORMAT, ListModuleCommand.MESSAGE_USAGE));
         }
 
-        String year = ParserUtil.parseYear(argMultimap.getValue(PREFIX_YEAR).get());
-        String semester = ParserUtil.parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
+        int year = ParserUtil.parseYear(argMultimap.getValue(PREFIX_YEAR).get());
+        int semester = ParserUtil.parseSemester(argMultimap.getValue(PREFIX_SEMESTER).get());
 
-        return new ListModuleCommand(year, semester);
+        return new ListModuleCommand(IndexUtil.convertYearAndSemesterToIndex(year, semester));
     }
 
     /**
