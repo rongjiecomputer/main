@@ -2,8 +2,6 @@ package seedu.planner.model.util;
 
 import java.util.List;
 
-import com.google.common.collect.ImmutableMap;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.planner.model.module.Module;
@@ -16,12 +14,13 @@ import seedu.planner.model.module.ModuleType;
 public class SampleModulesUtil {
 
     // @@author rongjiecomputer
+
     /**
      * Returns an {@code ObservableList<Module>} with modules from {@code start} to {@code end}.
      * The possible modules are stored in a {@code List} internally.
      *
      * @param start The start index
-     * @param end The end index
+     * @param end   The end index
      * @return An {@code ObservableList} with modules from {@code start} to {@code end}
      */
     public static ObservableList<Module> genModules(int start, int end) {
@@ -56,25 +55,8 @@ public class SampleModulesUtil {
         ModuleInfo cs9101 = new ModuleInfo("CS9101", "Beef Heef", pt6,
                 5, new String[]{}, new String[]{});
 
-        ImmutableMap.Builder<String, ModuleInfo> builder = ImmutableMap.builder();
-        builder.put("CS1010", cs1010);
-        builder.put("CS1231", cs1231);
-        builder.put("CS2030", cs2030);
-        builder.put("CS2040", cs2040);
-        builder.put("CS2040C", cs2040c);
-        builder.put("CS1234", cs1234);
-        builder.put("CS5678", cs5678);
-        builder.put("CS9101", cs9101);
-
-        ImmutableMap<String, ModuleInfo> map = builder.build();
-        cs1010.finalize(map);
-        cs1231.finalize(map);
-        cs2030.finalize(map);
-        cs2040.finalize(map);
-        cs2040c.finalize(map);
-        cs1234.finalize(map);
-        cs5678.finalize(map);
-        cs9101.finalize(map);
+        ModuleInfo.finalizeModuleInfo(
+                new ModuleInfo[]{cs1010, cs1231, cs2030, cs2040, cs2040c, cs1234, cs5678, cs9101});
 
         Module m1 = new Module(ModuleType.PR_FOUNDATION, cs1010);
         Module m2 = new Module(ModuleType.PR_BREADTH_AND_DEPTH, cs1231);

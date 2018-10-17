@@ -131,6 +131,28 @@ public class ModuleInfo {
         finalized = true;
     }
 
+    /**
+     * Takes in a list of {@code ModuleInfo}s deserialzied by JSON parser and
+     * finalize {@code ModuleInfo}s' internal structure.
+     *
+     * @param moduleInfo List of {@code ModuleInfo}s deserialized by JSON parser.
+     */
+    public static ModuleInfo[] finalizeModuleInfo(ModuleInfo[] moduleInfo) {
+        ImmutableMap.Builder<String, ModuleInfo> builder = ImmutableMap.builder();
+        for (ModuleInfo mInfo : moduleInfo) {
+            builder.put(mInfo.getCode(), mInfo);
+        }
+
+        // TODO(rongjiecomputer) This code->moduleInfo map is useful for other class too.
+        // Figure out a place to expose this to other classes.
+        ImmutableMap<String, ModuleInfo> map = builder.build();
+
+        for (ModuleInfo mInfo : moduleInfo) {
+            mInfo.finalize(map);
+        }
+        return moduleInfo;
+    }
+
     @Override
     public int hashCode() {
         return code.hashCode();

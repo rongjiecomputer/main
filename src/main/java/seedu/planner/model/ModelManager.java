@@ -34,9 +34,13 @@ public class ModelManager extends ComponentManager implements Model {
     /**
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
+    public ModelManager(ReadOnlyAddressBook addressBook, UserPrefs userPrefs) {
+        this(addressBook, new ModuleInfo[] {}, userPrefs);
+    }
+
     public ModelManager(ReadOnlyAddressBook addressBook, ModuleInfo[] moduleInfo, UserPrefs userPrefs) {
         super();
-        requireAllNonNull(addressBook, moduleInfo, userPrefs);
+        requireAllNonNull(addressBook, userPrefs);
 
         logger.fine("Initializing with planner book: " + addressBook + " and user prefs " + userPrefs);
 
@@ -46,6 +50,7 @@ public class ModelManager extends ComponentManager implements Model {
         this.moduleInfo = moduleInfo;
         versionedModulePlanner = new VersionedModulePlanner(new ModulePlanner());
     }
+
 
     //@@author Hilda-Ang
 

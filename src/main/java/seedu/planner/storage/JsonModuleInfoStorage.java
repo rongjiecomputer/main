@@ -32,23 +32,7 @@ public class JsonModuleInfoStorage implements ModuleInfoStorage {
     @Override
     public Optional<ModuleInfo[]> readModuleInfo() throws DataConversionException {
         Optional<ModuleInfo[]> optionalModuleInfo = JsonUtil.readJsonFile(filePath, ModuleInfo[].class);
-        return optionalModuleInfo.map(this::finalizeModuleInfo);
-    }
-
-    private ModuleInfo[] finalizeModuleInfo(ModuleInfo[] moduleInfo) {
-        ImmutableMap.Builder<String, ModuleInfo> builder = ImmutableMap.builder();
-        for (ModuleInfo mInfo : moduleInfo) {
-            builder.put(mInfo.getCode(), mInfo);
-        }
-
-        // TODO(rongjiecomputer) This code->moduleInfo map is useful for other class too.
-        // Figure out a place to expose this to other classes.
-        ImmutableMap<String, ModuleInfo> map = builder.build();
-
-        for (ModuleInfo mInfo : moduleInfo) {
-            mInfo.finalize(map);
-        }
-        return moduleInfo;
+        return optionalModuleInfo.map(ModuleInfo::finalizeModuleInfo);
     }
 
     /**
