@@ -13,8 +13,8 @@ import seedu.planner.commons.events.model.AddressBookChangedEvent;
 import seedu.planner.commons.events.storage.DataSavingExceptionEvent;
 import seedu.planner.commons.exceptions.DataConversionException;
 import seedu.planner.model.ReadOnlyAddressBook;
-import seedu.planner.model.module.ModuleInfo;
 import seedu.planner.model.UserPrefs;
+import seedu.planner.model.module.ModuleInfo;
 
 /**
  * Manages storage of AddressBook data in local storage.
@@ -55,7 +55,9 @@ public class StorageManager extends ComponentManager implements Storage {
     // ================ ModuleInfo methods ===============================
 
 
-    public Path getModuleInfoFilePath() {return moduleInfoStorage.getModuleInfoFilePath(); }
+    public Path getModuleInfoFilePath() {
+        return moduleInfoStorage.getModuleInfoFilePath();
+    }
 
     public Optional<ModuleInfo[]> readModuleInfo() throws DataConversionException, IOException {
         return moduleInfoStorage.readModuleInfo();

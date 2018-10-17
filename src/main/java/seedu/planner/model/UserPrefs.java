@@ -39,9 +39,13 @@ public class UserPrefs {
         this.addressBookFilePath = addressBookFilePath;
     }
 
-    public Path getModuleInfoFilePath() { return moduleInfoFilePath; }
+    public Path getModuleInfoFilePath() {
+        return moduleInfoFilePath;
+    }
 
-    public void setModuleInfoFilePath(Path moduleInfoFilePath) { this.moduleInfoFilePath = moduleInfoFilePath; }
+    public void setModuleInfoFilePath(Path moduleInfoFilePath) {
+        this.moduleInfoFilePath = moduleInfoFilePath;
+    }
 
     @Override
     public boolean equals(Object other) {

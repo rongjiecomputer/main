@@ -111,6 +111,11 @@ public class ModuleInfo {
         return precluModuleInfo;
     }
 
+    /**
+     * Initialize internal lists of prerequisite and preclusion {@code ModuleInfo}.
+     *
+     * @param map An immutable map that maps module code to {@code ModuleInfo}.
+     */
     public void finalize(ImmutableMap<String, ModuleInfo> map) {
         Preconditions.checkState(!finalized);
 
