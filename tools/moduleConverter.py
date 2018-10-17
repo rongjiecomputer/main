@@ -79,5 +79,10 @@ for module in newObj:
 
 print(count)
 
-with open(os.path.join(CURRENT_DIR, "..", "data", "moduleInfo.json"), "w", encoding="utf8") as f:
+output = os.path.join(CURRENT_DIR, "..", "data", "moduleInfo.json")
+
+with open(output, "w", encoding="utf8") as f:
   json.dump(newObj, f, indent=2)
+
+with open(output, "a", encoding="utf8") as f:
+  f.write("\n")
