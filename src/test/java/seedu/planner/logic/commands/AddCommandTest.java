@@ -22,7 +22,6 @@ import seedu.planner.model.ReadOnlyAddressBook;
 import seedu.planner.model.module.Module;
 import seedu.planner.model.module.ModuleInfo;
 import seedu.planner.model.person.Person;
-import seedu.planner.testutil.Assert;
 import seedu.planner.testutil.PersonBuilder;
 
 public class AddCommandTest {

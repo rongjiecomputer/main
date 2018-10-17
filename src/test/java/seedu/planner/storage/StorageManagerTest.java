@@ -19,7 +19,6 @@ import seedu.planner.commons.events.storage.DataSavingExceptionEvent;
 import seedu.planner.model.AddressBook;
 import seedu.planner.model.ReadOnlyAddressBook;
 import seedu.planner.model.UserPrefs;
-import seedu.planner.model.module.Module;
 import seedu.planner.ui.testutil.EventsCollectorRule;
 
 public class StorageManagerTest {
