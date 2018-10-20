@@ -58,7 +58,7 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
      * @param modules A list of valid modules to be added
      * @param index A valid semester
      */
-    public void addModulesToSemester(List<Module> modules, int index) {
+    public void addModules(List<Module> modules, int index) {
         semesters.get(index).addModules(modules);
     }
 
@@ -66,10 +66,26 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
      * Delete one or more module(s) from list of modules taken for the specified semester.
      *
      * @param modules A list of valid modules to be deleted
-     * @param index A valid semester
      */
-    public void deleteModulesFromSemester(List<Module> modules, int index) {
-        semesters.get(index).deleteModules(modules);
+    public void deleteModules(List<Module> modules) {
+        for (Semester semester : semesters) {
+            semester.deleteModules(modules);
+        }
+    }
+
+    /**
+     * Checks if the {@code Module} exists in the module planner.
+     *
+     * @param module The module to check
+     * @return True if the module exists, false if not
+     */
+    public boolean hasModule(Module module) {
+        for (Semester semester : semesters) {
+            if (semester.containsModule(module)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -92,7 +108,7 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
      */
     @Override
     public ObservableList<Module> listModulesTaken(int index) {
-        List<Module> modules = semesters.get(index - 1).getModulesTaken();
+        List<Module> modules = semesters.get(index).getModulesTaken();
         return FXCollections.unmodifiableObservableList(
                 FXCollections.observableList(modules));
     }
@@ -132,7 +148,7 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
             if (toRemove) {
                 this.semesters.remove(i);
             }
-            this.semesters.add(semesters.get(i));
+            this.semesters.add(i, semesters.get(i));
         }
     }
 }

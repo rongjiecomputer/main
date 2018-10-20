@@ -99,4 +99,24 @@ public class Module {
     public ImmutableList<ModuleInfo> getPrerequisites() {
         return information.getPrerequisites();
     }
+
+    @Override
+    public boolean equals(Object other) {
+
+        if (other == this) {
+            return true;
+        }
+
+        if (!(other instanceof Module)) {
+            return false;
+        }
+
+        Module module = (Module) other;
+        return this.information.getCode().equals(module.getCode());
+    }
+
+    @Override
+    public String toString() {
+        return getCode();
+    }
 }

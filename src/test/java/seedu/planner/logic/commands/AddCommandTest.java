@@ -7,6 +7,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 import org.junit.Rule;
@@ -147,6 +148,17 @@ public class AddCommandTest {
         public ObservableList<Module> getFilteredAvailableModuleList(int index) {
             throw new AssertionError("This method should not be called.");
         }
+
+        //TODO: implement
+        @Override
+        public boolean hasModule(Module module) {
+            return true;
+        }
+
+        public void deleteModules(List<Module> modules) {
+
+        }
+
         //@@author
 
         @Override

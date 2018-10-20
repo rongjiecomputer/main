@@ -1,26 +1,21 @@
 package seedu.planner.model.util;
 
-//TODO
-
 /**
  * Helper functions for handling module.
  */
 public class ModuleUtil {
+    public static final String MODULE_CODE_REGEX = "^[A-Z]{2,3}\\d{4}[A-Z]{0,2}$";
 
     //@@author GabrielYik
 
-    //TODO
     /**
-     * Checks if the module code is valid.
+     * Checks if the module code format is valid.
      *
-     * @return True if the module code valid
+     * @return True if the module code format valid
      */
-    public static boolean hasValidCode(String code) {
-        // This function should look through all available modules
-        // and see if this module code exists
-        return true;
+    public static boolean hasValidCodeFormat(String code) {
+        return code.matches(MODULE_CODE_REGEX);
     }
 
     //@@author
-
 }

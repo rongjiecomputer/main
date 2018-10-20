@@ -3,6 +3,7 @@ package seedu.planner.model;
 import static java.util.Objects.requireNonNull;
 import static seedu.planner.commons.util.CollectionUtil.requireAllNonNull;
 
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
 
@@ -15,6 +16,7 @@ import seedu.planner.commons.events.model.AddressBookChangedEvent;
 import seedu.planner.model.module.Module;
 import seedu.planner.model.module.ModuleInfo;
 import seedu.planner.model.person.Person;
+import seedu.planner.model.util.SampleModulePlannerUtil;
 
 /**
  * Represents the in-memory model of the planner book data.
@@ -48,7 +50,8 @@ public class ModelManager extends ComponentManager implements Model {
         filteredPersons = new FilteredList<>(versionedAddressBook.getPersonList());
 
         this.moduleInfo = moduleInfo;
-        versionedModulePlanner = new VersionedModulePlanner(new ModulePlanner());
+        versionedModulePlanner = new VersionedModulePlanner(
+                SampleModulePlannerUtil.genModulePlanner(new ModulePlanner()));
     }
 
 
@@ -93,6 +96,8 @@ public class ModelManager extends ComponentManager implements Model {
         raise(new AddressBookChangedEvent(versionedAddressBook));
     }
 
+    //=========== Person methods =============================================================================
+
     @Override
     public boolean hasPerson(Person person) {
         requireNonNull(person);
@@ -119,6 +124,20 @@ public class ModelManager extends ComponentManager implements Model {
         versionedAddressBook.updatePerson(target, editedPerson);
         indicateAddressBookChanged();
     }
+
+    //=========== Module methods =============================================================================
+
+    @Override
+    public boolean hasModule(Module module) {
+        requireNonNull(module);
+        return versionedModulePlanner.hasModule(module);
+    }
+
+    @Override
+    public void deleteModules(List<Module> moduleCodes) {
+        versionedModulePlanner.deleteModules(moduleCodes);
+    }
+
 
     //=========== Filtered Person List Accessors =============================================================
 
