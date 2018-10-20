@@ -73,6 +73,18 @@ public interface Model {
      */
     void deleteModules(List<Module> modules);
 
+    //@@author RomaRomama
+
+    /**
+     * Add list of modules into the specified semester
+     *
+     * @param modules List of modules
+     * @param index Index of the semester
+     */
+    void addModules(List<Module> modules, int index);
+
+    //@@author
+
     // @@author rongjiecomputer
 
     /**

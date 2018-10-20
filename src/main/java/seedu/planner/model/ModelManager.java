@@ -138,6 +138,14 @@ public class ModelManager extends ComponentManager implements Model {
         versionedModulePlanner.deleteModules(moduleCodes);
     }
 
+    //@@author RomaRomama
+
+    @Override
+    public void addModules(List<Module> modules, int index) {
+        versionedModulePlanner.addModules(modules, index);
+    }
+
+    //@@author
 
     //=========== Filtered Person List Accessors =============================================================
 
