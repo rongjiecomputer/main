@@ -12,6 +12,8 @@ import java.util.Arrays;
  */
 public class StringUtil {
 
+    private static final String ALL_LETTERS_REGEX = "[a-zA-Z]+";
+
     /**
      * Returns true if the {@code sentence} contains the {@code word}.
      *   Ignores case, but a full word match is required.
@@ -69,15 +71,15 @@ public class StringUtil {
         }
     }
 
+    //@@author GabrielYik
+
     /**
-     * Checks if the String is empty.
+     * Checks if the String contains only alphabets.
      *
      * @param s The String
-     * @return True if s is empty.
+     * @return True if the String contains only alphabets
      */
-    public static boolean isEmptyString(String s) {
-        requireNonNull(s);
-
-        return s.length() == 0;
+    public static boolean containsOnlyLetters(String s) {
+        return s.matches(ALL_LETTERS_REGEX);
     }
 }
