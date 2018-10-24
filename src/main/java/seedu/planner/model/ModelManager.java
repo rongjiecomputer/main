@@ -23,7 +23,6 @@ import seedu.planner.model.module.Module;
 import seedu.planner.model.module.ModuleInfo;
 import seedu.planner.model.module.ModuleType;
 import seedu.planner.model.person.Person;
-import seedu.planner.model.util.SampleModulePlannerUtil;
 
 /**
  * Represents the in-memory model of the planner book data.
@@ -46,10 +45,11 @@ public class ModelManager extends ComponentManager implements Model {
      * Initializes a ModelManager with the given addressBook and userPrefs.
      */
     public ModelManager(ReadOnlyAddressBook addressBook, UserPrefs userPrefs) {
-        this(addressBook, new ModuleInfo[] {}, userPrefs);
+        this(addressBook, new ModulePlanner(), new ModuleInfo[] {}, userPrefs);
     }
 
-    public ModelManager(ReadOnlyAddressBook addressBook, ModuleInfo[] moduleInfo, UserPrefs userPrefs) {
+    public ModelManager(ReadOnlyAddressBook addressBook, ReadOnlyModulePlanner modulePlanner,
+                        ModuleInfo[] moduleInfo, UserPrefs userPrefs) {
         super();
         requireAllNonNull(addressBook, userPrefs);
 
@@ -59,8 +59,7 @@ public class ModelManager extends ComponentManager implements Model {
         filteredPersons = new FilteredList<>(versionedAddressBook.getPersonList());
 
         this.moduleInfo = moduleInfo;
-        versionedModulePlanner = new VersionedModulePlanner(
-                SampleModulePlannerUtil.genModulePlanner(new ModulePlanner()));
+        versionedModulePlanner = new VersionedModulePlanner(modulePlanner);
     }
 
     //@@author Hilda-Ang
