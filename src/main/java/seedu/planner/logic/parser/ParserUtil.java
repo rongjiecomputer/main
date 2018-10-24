@@ -29,8 +29,8 @@ import seedu.planner.model.util.ModuleUtil;
 public class ParserUtil {
 
     public static final String MESSAGE_INVALID_INDEX = "Index is not a non-zero unsigned integer.";
-    private static final String MESSAGE_INVALID_YEAR = "Year is not between 1 to 4.";
-    private static final String MESSAGE_INVALID_SEMESTER = "Semester is not between 1 to 2.";
+    public static final String MESSAGE_INVALID_YEAR = "Year is not between 1 to 4.";
+    public static final String MESSAGE_INVALID_SEMESTER = "Semester is not between 1 to 2.";
 
     /**
      * Parses {@code oneBasedIndex} into an {@code Index} and returns it.
@@ -97,6 +97,7 @@ public class ParserUtil {
      * @throws ParseException if the major's format is wrong
      */
     public static String parseMajor(String major) throws ParseException {
+        requireNonNull(major);
         if (!StringUtil.containsOnlyLettersAndWhiteSpace(major)) {
             throw new ParseException(MESSAGE_MAJOR_CONSTRAINTS);
         }
@@ -164,7 +165,7 @@ public class ParserUtil {
     public static int parseSemester(String semester) throws ParseException {
         requireNonNull(semester);
         int semesterIndex = Integer.parseInt(semester.trim());
-        if (!IndexUtil.isValidYear(semesterIndex)) {
+        if (!IndexUtil.isValidSemester(semesterIndex)) {
             throw new ParseException(MESSAGE_INVALID_SEMESTER);
         }
         return semesterIndex;
