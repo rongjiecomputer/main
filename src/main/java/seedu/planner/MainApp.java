@@ -2,6 +2,7 @@ package seedu.planner;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -28,9 +29,9 @@ import seedu.planner.model.UserPrefs;
 import seedu.planner.model.module.ModuleInfo;
 import seedu.planner.model.util.SampleDataUtil;
 import seedu.planner.storage.AddressBookStorage;
-import seedu.planner.storage.JsonModuleInfoStorage;
+import seedu.planner.storage.JsonModulePlannerStorage;
 import seedu.planner.storage.JsonUserPrefsStorage;
-import seedu.planner.storage.ModuleInfoStorage;
+import seedu.planner.storage.ModulePlannerStorage;
 import seedu.planner.storage.Storage;
 import seedu.planner.storage.StorageManager;
 import seedu.planner.storage.UserPrefsStorage;
@@ -43,7 +44,7 @@ import seedu.planner.ui.UiManager;
  */
 public class MainApp extends Application {
 
-    public static final Version VERSION = new Version(1, 2, 0, true);
+    public static final Version VERSION = new Version(1, 3, 0, true);
 
     private static final Logger logger = LogsCenter.getLogger(MainApp.class);
 
@@ -57,7 +58,7 @@ public class MainApp extends Application {
 
     @Override
     public void init() throws Exception {
-        logger.info("=============================[ Initializing AddressBook ]===========================");
+        logger.info("=============================[ Initializing Module Planner ]===========================");
         super.init();
 
         AppParameters appParameters = AppParameters.parse(getParameters());
@@ -67,8 +68,11 @@ public class MainApp extends Application {
         userPrefs = initPrefs(userPrefsStorage);
 
         AddressBookStorage addressBookStorage = new XmlAddressBookStorage(userPrefs.getAddressBookFilePath());
-        ModuleInfoStorage moduleInfoStorage = new JsonModuleInfoStorage(userPrefs.getModuleInfoFilePath());
-        storage = new StorageManager(addressBookStorage, moduleInfoStorage, userPrefsStorage);
+
+        // TODO(rongjiecomputer) Put path to UserPrefs.
+        ModulePlannerStorage modulePlannerStorage = new JsonModulePlannerStorage(
+            Paths.get("data", "modulePlanner.json"));
+        storage = new StorageManager(addressBookStorage, modulePlannerStorage, userPrefsStorage);
 
         initLogging(config);
 
@@ -89,26 +93,9 @@ public class MainApp extends Application {
     private Model initModelManager(Storage storage, UserPrefs userPrefs) {
         Optional<ReadOnlyAddressBook> addressBookOptional;
         ReadOnlyAddressBook initialData;
-        Optional<ModuleInfo[]> moduleInfoOptional;
-        ModuleInfo[] initialModuleInfo;
 
-        try {
-            moduleInfoOptional = storage.readModuleInfo();
-            if (!moduleInfoOptional.isPresent()) {
-                logger.info("Module info file not found. Will be starting with a sample module database");
-                // TODO(rongjiecomputer) Actually use sample data when #108 is merged.
-                initialModuleInfo = new ModuleInfo[] {};
-            } else {
-                initialModuleInfo = moduleInfoOptional.get();
-            }
-        } catch (DataConversionException e) {
-            logger.warning("Module info file not in the correct format."
-                    + " Will be starting with an empty module database");
-            initialModuleInfo = new ModuleInfo[] {};
-        } catch (IOException e) {
-            logger.warning("Problem while reading from the file. Will be starting with an empty module database");
-            initialModuleInfo = new ModuleInfo[] {};
-        }
+        ModuleInfo.ModuleInfoRetriever retriever = ModuleInfo.ModuleInfoRetriever.getInstance();
+        ModuleInfo[] initialModuleInfo = retriever.getModuleInfoList();
 
         try {
             addressBookOptional = storage.readAddressBook();
@@ -211,7 +198,7 @@ public class MainApp extends Application {
 
     @Override
     public void stop() {
-        logger.info("============================ [ Stopping Address Book ] =============================");
+        logger.info("============================ [ Stopping Module Planner ] =============================");
         ui.stop();
         try {
             storage.saveUserPrefs(userPrefs);
