@@ -1,6 +1,5 @@
 package seedu.planner;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 
@@ -11,15 +10,13 @@ import seedu.planner.commons.core.GuiSettings;
 import seedu.planner.commons.exceptions.DataConversionException;
 import seedu.planner.commons.util.FileUtil;
 import seedu.planner.commons.util.XmlUtil;
-import seedu.planner.model.AddressBook;
 import seedu.planner.model.Model;
 import seedu.planner.model.ModelManager;
-import seedu.planner.model.ReadOnlyAddressBook;
+import seedu.planner.model.ModulePlanner;
+import seedu.planner.model.ReadOnlyModulePlanner;
 import seedu.planner.model.UserPrefs;
 import seedu.planner.storage.UserPrefsStorage;
-import seedu.planner.storage.XmlSerializableAddressBook;
 import seedu.planner.testutil.TestUtil;
-import systemtests.ModelHelper;
 
 /**
  * This class is meant to override some properties of MainApp so that it will be suited for
@@ -32,22 +29,24 @@ public class TestApp extends MainApp {
 
     protected static final Path DEFAULT_PREF_FILE_LOCATION_FOR_TESTING =
             TestUtil.getFilePathInSandboxFolder("pref_testing.json");
-    protected Supplier<ReadOnlyAddressBook> initialDataSupplier = () -> null;
+    protected Supplier<ReadOnlyModulePlanner> initialDataSupplier = () -> null;
     protected Path saveFileLocation = SAVE_LOCATION_FOR_TESTING;
 
     public TestApp() {
     }
 
-    public TestApp(Supplier<ReadOnlyAddressBook> initialDataSupplier, Path saveFileLocation) {
+    public TestApp(Supplier<ReadOnlyModulePlanner> initialDataSupplier, Path saveFileLocation) {
         super();
         this.initialDataSupplier = initialDataSupplier;
         this.saveFileLocation = saveFileLocation;
 
         // If some initial local data has been provided, write those to the file
+        /*
         if (initialDataSupplier.get() != null) {
             createDataFileWithData(new XmlSerializableAddressBook(this.initialDataSupplier.get()),
                     this.saveFileLocation);
         }
+        */
     }
 
     @Override
@@ -71,13 +70,11 @@ public class TestApp extends MainApp {
     /**
      * Returns a defensive copy of the planner book data stored inside the storage file.
      */
-    public AddressBook readStorageAddressBook() {
+    public ModulePlanner readStorageModulePlanner() {
         try {
-            return new AddressBook(storage.readAddressBook().get());
+            return new ModulePlanner(storage.readModulePlanner().get());
         } catch (DataConversionException dce) {
             throw new AssertionError("Data is not in the AddressBook format.", dce);
-        } catch (IOException ioe) {
-            throw new AssertionError("Storage file cannot be found.", ioe);
         }
     }
 
@@ -85,15 +82,15 @@ public class TestApp extends MainApp {
      * Returns the file path of the storage file.
      */
     public Path getStorageSaveLocation() {
-        return storage.getAddressBookFilePath();
+        return storage.getModulePlannerFilePath();
     }
 
     /**
      * Returns a defensive copy of the model.
      */
     public Model getModel() {
-        Model copy = new ModelManager((model.getAddressBook()), new UserPrefs());
-        ModelHelper.setFilteredList(copy, model.getFilteredPersonList());
+        Model copy = new ModelManager(model.getModulePlanner(), new UserPrefs());
+        // ModelHelper.setFilteredList(copy, model.getFilteredPersonList());
         return copy;
     }
 

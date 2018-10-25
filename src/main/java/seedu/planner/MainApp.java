@@ -2,6 +2,7 @@ package seedu.planner;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -20,23 +21,18 @@ import seedu.planner.commons.util.ConfigUtil;
 import seedu.planner.commons.util.StringUtil;
 import seedu.planner.logic.Logic;
 import seedu.planner.logic.LogicManager;
-import seedu.planner.model.AddressBook;
 import seedu.planner.model.Model;
 import seedu.planner.model.ModelManager;
 import seedu.planner.model.ModulePlanner;
-import seedu.planner.model.ReadOnlyAddressBook;
 import seedu.planner.model.ReadOnlyModulePlanner;
 import seedu.planner.model.UserPrefs;
 import seedu.planner.model.module.ModuleInfo;
-import seedu.planner.model.util.SampleDataUtil;
-import seedu.planner.storage.AddressBookStorage;
 import seedu.planner.storage.JsonModulePlannerStorage;
 import seedu.planner.storage.JsonUserPrefsStorage;
 import seedu.planner.storage.ModulePlannerStorage;
 import seedu.planner.storage.Storage;
 import seedu.planner.storage.StorageManager;
 import seedu.planner.storage.UserPrefsStorage;
-import seedu.planner.storage.XmlAddressBookStorage;
 import seedu.planner.ui.Ui;
 import seedu.planner.ui.UiManager;
 
@@ -68,10 +64,10 @@ public class MainApp extends Application {
         UserPrefsStorage userPrefsStorage = new JsonUserPrefsStorage(config.getUserPrefsFilePath());
         userPrefs = initPrefs(userPrefsStorage);
 
-        AddressBookStorage addressBookStorage = new XmlAddressBookStorage(userPrefs.getAddressBookFilePath());
-
-        ModulePlannerStorage modulePlannerStorage = new JsonModulePlannerStorage(userPrefs.getModulePlannerFilePath());
-        storage = new StorageManager(addressBookStorage, modulePlannerStorage, userPrefsStorage);
+        // TODO(rongjiecomputer) Put path to UserPrefs.
+        ModulePlannerStorage modulePlannerStorage = new JsonModulePlannerStorage(
+            Paths.get("data", "modulePlanner.json"));
+        storage = new StorageManager(modulePlannerStorage, userPrefsStorage);
 
         initLogging(config);
 
@@ -90,9 +86,7 @@ public class MainApp extends Application {
      * or an empty planner book will be used instead if errors occur when reading {@code storage}'s planner book.
      */
     private Model initModelManager(Storage storage, UserPrefs userPrefs) {
-        Optional<ReadOnlyAddressBook> addressBookOptional;
         Optional<ReadOnlyModulePlanner> modulePlannerOptional;
-        ReadOnlyAddressBook initialData;
         ReadOnlyModulePlanner initialModulePlanner;
 
         ModuleInfo.ModuleInfoRetriever retriever = ModuleInfo.ModuleInfoRetriever.getInstance();
@@ -109,21 +103,7 @@ public class MainApp extends Application {
             initialModulePlanner = new ModulePlanner();
         }
 
-        try {
-            addressBookOptional = storage.readAddressBook();
-            if (!addressBookOptional.isPresent()) {
-                logger.info("Data file not found. Will be starting with a sample AddressBook");
-            }
-            initialData = addressBookOptional.orElseGet(SampleDataUtil::getSampleAddressBook);
-        } catch (DataConversionException e) {
-            logger.warning("Data file not in the correct format. Will be starting with an empty AddressBook");
-            initialData = new AddressBook();
-        } catch (IOException e) {
-            logger.warning("Problem while reading from the file. Will be starting with an empty AddressBook");
-            initialData = new AddressBook();
-        }
-
-        return new ModelManager(initialData, initialModulePlanner, initialModuleInfo, userPrefs);
+        return new ModelManager(initialModulePlanner, initialModuleInfo, userPrefs);
     }
 
     private void initLogging(Config config) {

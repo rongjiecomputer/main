@@ -44,16 +44,11 @@ public class MainWindow extends UiPart<Stage> {
     private Logic logic;
 
     // Independent Ui parts residing in this Ui container
-    private BrowserPanel browserPanel;
     private ModuleListPanel[] takenModulesListPanels;
     private ModuleListPanel[] availableModulesListPanels;
-    private PersonListPanel personListPanel;
     private Config config;
     private UserPrefs prefs;
     private HelpWindow helpWindow;
-
-    @FXML
-    private StackPane browserPlaceholder;
 
     @FXML
     private TabPane semestersTabPane;
@@ -63,9 +58,6 @@ public class MainWindow extends UiPart<Stage> {
 
     @FXML
     private MenuItem helpMenuItem;
-
-    @FXML
-    private StackPane personListPanelPlaceholder;
 
     @FXML
     private StackPane resultDisplayPlaceholder;
@@ -136,42 +128,29 @@ public class MainWindow extends UiPart<Stage> {
     void fillInnerParts() {
 
         //@@author GabrielYik
+        takenModulesListPanels = new ModuleListPanel[MAX_NUMBER_SEMESTERS];
+        availableModulesListPanels = new ModuleListPanel[MAX_NUMBER_SEMESTERS];
 
-        if (FXML.equals("MainWindow_Test.fxml")) {
-            takenModulesListPanels = new ModuleListPanel[MAX_NUMBER_SEMESTERS];
-            availableModulesListPanels = new ModuleListPanel[MAX_NUMBER_SEMESTERS];
+        for (int semesterIndex = 0; semesterIndex < MAX_NUMBER_SEMESTERS; semesterIndex++) {
+            takenModulesListPanels[semesterIndex] = new ModuleListPanel(
+                    logic.getFilteredTakenModuleList(semesterIndex));
+            availableModulesListPanels[semesterIndex] = new ModuleListPanel(
+                    logic.getFilteredAvailableModuleList(semesterIndex));
+        }
 
-            for (int semesterIndex = 0; semesterIndex < MAX_NUMBER_SEMESTERS; semesterIndex++) {
-                takenModulesListPanels[semesterIndex] = new ModuleListPanel(
-                        logic.getFilteredTakenModuleList(semesterIndex));
-                availableModulesListPanels[semesterIndex] = new ModuleListPanel(
-                        logic.getFilteredAvailableModuleList(semesterIndex));
+        ObservableList<Tab> semesterTabs = semestersTabPane.getTabs();
+        for (int semesterIndex = 0; semesterIndex < semesterTabs.size(); semesterIndex++) {
+            SplitPane splitPane = (SplitPane) semesterTabs.get(semesterIndex).getContent();
+            ObservableList<Node> nodes = splitPane.getItems();
+
+            for (int i = 0; i < NUMBER_MODULE_GROUPS; i++) {
+                VBox vBox = (VBox) nodes.get(i);
+                StackPane stackPane = (StackPane) vBox.getChildren().get(0);
+                Node n = (i == 0)
+                        ? takenModulesListPanels[semesterIndex].getRoot()
+                        : availableModulesListPanels[semesterIndex].getRoot();
+                stackPane.getChildren().add(n);
             }
-
-            ObservableList<Tab> semesterTabs = semestersTabPane.getTabs();
-            for (int semesterIndex = 0; semesterIndex < semesterTabs.size(); semesterIndex++) {
-                SplitPane splitPane = (SplitPane) semesterTabs.get(semesterIndex).getContent();
-                ObservableList<Node> nodes = splitPane.getItems();
-
-                for (int i = 0; i < NUMBER_MODULE_GROUPS; i++) {
-                    VBox vBox = (VBox) nodes.get(i);
-                    StackPane stackPane = (StackPane) vBox.getChildren().get(0);
-                    Node n = (i == 0)
-                            ? takenModulesListPanels[semesterIndex].getRoot()
-                            : availableModulesListPanels[semesterIndex].getRoot();
-                    stackPane.getChildren().add(n);
-                }
-            }
-
-        } else {
-
-            //@@author
-
-            browserPanel = new BrowserPanel();
-            browserPlaceholder.getChildren().add(browserPanel.getRoot());
-
-            personListPanel = new PersonListPanel(logic.getFilteredPersonList());
-            personListPanelPlaceholder.getChildren().add(personListPanel.getRoot());
         }
 
         ResultDisplay resultDisplay = new ResultDisplay();
@@ -234,14 +213,6 @@ public class MainWindow extends UiPart<Stage> {
     @FXML
     private void handleExit() {
         raise(new ExitAppRequestEvent());
-    }
-
-    public PersonListPanel getPersonListPanel() {
-        return personListPanel;
-    }
-
-    void releaseResources() {
-        browserPanel.freeResources();
     }
 
     @Subscribe
