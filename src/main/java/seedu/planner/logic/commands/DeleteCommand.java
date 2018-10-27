@@ -17,22 +17,22 @@ import seedu.planner.model.module.Module;
 /**
  * Deletes a module identified using it's module code from the module planner.
  */
-public class DeleteModuleCommand extends Command {
+public class DeleteCommand extends Command {
 
-    public static final String COMMAND_WORD = "deleteModule";
+    public static final String COMMAND_WORD = "delete";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD
             + ": Deletes the module identified using it's module code.\n"
             + "Parameters: "
             + PREFIX_CODE + "MODULE CODE "
             + "Example: " + COMMAND_WORD + " "
-            + PREFIX_CODE + "CS2103T";
+            + PREFIX_CODE + "CS2103T ";
 
     public static final String MESSAGE_DELETE_MODULES_SUCCESS = "Deleted Module(s): %1$s";
 
     private final List<Module> modulesToDelete;
 
-    public DeleteModuleCommand(List<Module> modules) {
+    public DeleteCommand(List<Module> modules) {
         this.modulesToDelete = modules;
     }
 
@@ -71,11 +71,11 @@ public class DeleteModuleCommand extends Command {
             return true;
         }
 
-        if (!(other instanceof DeleteModuleCommand)) {
+        if (!(other instanceof DeleteCommand)) {
             return false;
         }
 
-        DeleteModuleCommand command = (DeleteModuleCommand) other;
+        DeleteCommand command = (DeleteCommand) other;
         return modulesToDelete.stream().allMatch(x ->
             command.modulesToDelete.stream().anyMatch(y -> y.equals(x)));
     }

@@ -12,9 +12,9 @@ import seedu.planner.model.Model;
 /**
  * Shows all modules that the user is available to take for a particular semester.
  */
-public class SuggestModuleCommand extends Command {
+public class SuggestCommand extends Command {
 
-    public static final String COMMAND_WORD = "suggestCommand";
+    public static final String COMMAND_WORD = "suggest";
 
     public static final String MESSAGE_USAGE = COMMAND_WORD + ": Show modules the user is available to take. "
             + "Parameters: "
@@ -28,14 +28,14 @@ public class SuggestModuleCommand extends Command {
 
     private int index;
 
-    public SuggestModuleCommand(int index) {
+    public SuggestCommand(int index) {
         this.index = index;
     }
 
     @Override
     public CommandResult execute(Model model, CommandHistory history) {
         requireNonNull(model);
-        model.getFilteredAvailableModuleList(index);
+        model.getAvailableModuleList(index);
         return new CommandResult(MESSAGE_SUCCESS);
     }
 }
