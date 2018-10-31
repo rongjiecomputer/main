@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import seedu.planner.commons.core.ComponentManager;
 import seedu.planner.commons.core.LogsCenter;
 import seedu.planner.commons.events.model.ModulePlannerChangedEvent;
@@ -28,6 +29,8 @@ public class ModelManager extends ComponentManager implements Model {
 
     private final VersionedModulePlanner versionedModulePlanner;
 
+    private final FilteredList<Module> availableModules;
+
     //@@author Hilda-Ang
 
     /**
@@ -40,6 +43,8 @@ public class ModelManager extends ComponentManager implements Model {
         logger.fine("Initializing with planner: " + modulePlanner + " and user prefs " + userPrefs);
 
         versionedModulePlanner = new VersionedModulePlanner(modulePlanner);
+
+        availableModules = new FilteredList<>(versionedModulePlanner.getAvailableModuleList());
     }
 
     public ModelManager() {
@@ -138,8 +143,7 @@ public class ModelManager extends ComponentManager implements Model {
 
     @Override
     public ObservableList<Module> getAvailableModuleList() {
-        return FXCollections.unmodifiableObservableList(
-                versionedModulePlanner.getModulesAvailable());
+        return FXCollections.unmodifiableObservableList(availableModules);
     }
 
     //@@author

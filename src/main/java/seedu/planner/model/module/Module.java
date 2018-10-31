@@ -105,7 +105,7 @@ public class Module {
         }
 
         Module module = (Module) other;
-        return this.information.getCode().equals(module.getCode());
+        return this.getCode().equals(module.getCode());
     }
 
     @Override
