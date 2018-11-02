@@ -63,6 +63,9 @@ public interface Model {
      */
     void addModules(Set<Module> modules, int index);
 
+    //@@author Hilda-Ang
+    void suggestModules(int index);
+
     // @@author rongjiecomputer
 
     /**

@@ -10,7 +10,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import seedu.planner.model.module.Module;
 import seedu.planner.model.module.ModuleInfo;
-import seedu.planner.model.module.UniqueModuleList;
 import seedu.planner.model.semester.Semester;
 import seedu.planner.model.user.UserProfile;
 import seedu.planner.model.util.ModuleUtil;
@@ -25,29 +24,12 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
     public static final int MAX_NUMBER_SEMESTERS = 8;
     public static final int MAX_SEMESTERS_PER_YEAR = 2;
 
-    /**
-     * The number of {@code Module} groups that is shown to the user.
-     * Currently, there are two groups: one for modules taken and
-     * one for modules available. A {@code Module} group is different
-     * from a {@code ModuleType}.
-     */
-    public static final int NUMBER_MODULE_GROUPS = 2;
-
     private final List<Semester> semesters;
     private UserProfile userProfile;
 
-    private final UniqueModuleList availableModules;
+    private final ObservableList<Module> availableModules = FXCollections.observableArrayList();
 
-    /*
-     * The 'unusual' code block below is an non-static initialization block, sometimes used to avoid duplication
-     * between constructors. See https://docs.oracle.com/javase/tutorial/java/javaOO/initial.html
-     *
-     * Note that non-static init blocks are not recommended to use. There are other ways to avoid duplication
-     *   among constructors.
-     */
-    {
-        availableModules = new UniqueModuleList();
-    }
+    private int index;
 
     /**
      * Constructs a {@code ModulePlanner} and initializes an array of 8 {@code Semester}
@@ -62,6 +44,8 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
                 semesters.add(new Semester(i, j));
             }
         }
+
+        index = 0;
     }
 
     /**
@@ -77,7 +61,7 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
      * {@code modules} must not contain duplicate modules.
      */
     public void setAvailableModules(List<Module> modules) {
-        availableModules.setModules(modules);
+        availableModules.setAll(modules);
     }
 
     /**
@@ -88,7 +72,7 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
      */
     public void addModules(Set<Module> modules, int index) {
         semesters.get(index).addModules(modules);
-        setAvailableModules(getModulesAvailable());
+        setAvailableModules(getModulesAvailable(this.index));
     }
 
     /**
@@ -100,7 +84,7 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
         for (Semester semester : semesters) {
             semester.deleteModules(modules);
         }
-        setAvailableModules(getModulesAvailable());
+        setAvailableModules(getModulesAvailable(index));
     }
 
     /**
@@ -161,8 +145,8 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
      * @return An {@code ObservableList} containing all the {@code Module}s
      */
     public ObservableList<Module> getAvailableModuleList() {
-        setAvailableModules(getModulesAvailable());
-        return availableModules.asUnmodifiableObservableList();
+        setAvailableModules(getModulesAvailable(index));
+        return availableModules;
     }
 
     /**
@@ -170,6 +154,7 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
      */
     public void resetData(ReadOnlyModulePlanner newData) {
         requireNonNull(newData);
+        setAvailableModules(getModulesAvailable(index));
         setModulesInSemesters(newData.getSemesters());
     }
 
@@ -180,13 +165,30 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
         }
     }
 
-    private List<Module> getModulesAvailable() {
+    /**
+     * Updates the list of modules available based on given index and stores the index for add and delete commands.
+     *
+     * @param index An integer from 0 to 7 inclusive indicating the year and semester to suggest.
+     */
+    public void suggestModules(int index) {
+        this.index = index;
+        setAvailableModules(getModulesAvailable(index));
+    }
+
+    /**
+     * Get a list of all the modules user can take based on the modules user has taken until given index.
+     *
+     * @param index An integer from 0 to 7 inclusive to show the current year and semester to suggest.
+     * @return A list of {@code Module}s the user is available to take.
+     */
+    private List<Module> getModulesAvailable(int index) {
         List<Module> modulesAvailable = new ArrayList<>();
         List<Module> modulesTaken = getAllModulesTaken();
+        List<Module> modulesTakenUntilIndex = getAllModulesTakenUntilIndex(index);
         List<Module> allModules = getAllModulesFromStorage();
 
         for (Module m: allModules) {
-            if (ModuleUtil.isModuleAvailableToTake(modulesTaken, m)) {
+            if (ModuleUtil.isModuleAvailableToTake(modulesTaken, modulesTakenUntilIndex, m)) {
                 modulesAvailable.add(m);
             }
         }
@@ -202,6 +204,20 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
         List<Module> modulesTaken = new ArrayList<>();
         for (Semester s: semesters) {
             modulesTaken.addAll(s.getModules());
+        }
+        return modulesTaken;
+    }
+
+    /**
+     * Combines the list of {@code Module}s taken for every {@code Semester} until current index.
+     *
+     * @param index The current index user is at.
+     * @return A list of all {@code Module}s the user has taken until the specified index.
+     */
+    private List<Module> getAllModulesTakenUntilIndex(int index) {
+        List<Module> modulesTaken = new ArrayList<>();
+        for (int i = 0; i <= index; i++) {
+            modulesTaken.addAll(semesters.get(i).getModules());
         }
         return modulesTaken;
     }

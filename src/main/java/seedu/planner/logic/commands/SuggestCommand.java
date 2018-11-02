@@ -3,9 +3,17 @@ package seedu.planner.logic.commands;
 import static java.util.Objects.requireNonNull;
 import static seedu.planner.logic.parser.CliSyntax.PREFIX_SEMESTER;
 import static seedu.planner.logic.parser.CliSyntax.PREFIX_YEAR;
+import static seedu.planner.model.util.IndexUtil.isValidIndex;
 
+import javafx.collections.ObservableList;
+
+import seedu.planner.commons.core.EventsCenter;
+import seedu.planner.commons.core.Messages;
+import seedu.planner.commons.events.ui.SuggestModuleEvent;
 import seedu.planner.logic.CommandHistory;
+import seedu.planner.logic.commands.exceptions.CommandException;
 import seedu.planner.model.Model;
+import seedu.planner.model.module.Module;
 
 //@@author Hilda-Ang
 
@@ -26,10 +34,34 @@ public class SuggestCommand extends Command {
 
     public static final String MESSAGE_SUCCESS = "Showed all available modules.";
 
+    private int index;
+
+    /**
+     * Creates a SuggestCommand to list modules for specified semester.
+     */
+    public SuggestCommand(int index) {
+        this.index = index;
+    }
+
     @Override
-    public CommandResult execute(Model model, CommandHistory history) {
+    public CommandResult execute(Model model, CommandHistory history) throws CommandException {
         requireNonNull(model);
-        model.getAvailableModuleList();
-        return new CommandResult(MESSAGE_SUCCESS);
+
+        if (!isValidIndex(index)) {
+            throw new CommandException(Messages.MESSAGE_INVALID_PARAMETERS);
+        }
+
+        model.suggestModules(index);
+        ObservableList<Module> moduleList = model.getAvailableModuleList();
+        EventsCenter.getInstance().post(new SuggestModuleEvent(moduleList));
+
+        return new CommandResult(String.format(MESSAGE_SUCCESS, index));
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other == this // short circuit if same object
+                || (other instanceof SuggestCommand // instanceof handles nulls
+                && index == ((SuggestCommand) other).index);
     }
 }
