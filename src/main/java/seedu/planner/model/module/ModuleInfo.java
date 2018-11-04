@@ -3,20 +3,16 @@ package seedu.planner.model.module;
 //@@author rongjiecomputer
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.logging.Logger;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.io.Resources;
 
-import seedu.planner.MainApp;
 import seedu.planner.commons.core.LogsCenter;
 import seedu.planner.commons.util.JsonUtil;
 
@@ -41,7 +37,7 @@ public class ModuleInfo {
 
     private String name;
 
-    private ModuleType[] possibleTypes;
+    private String description;
 
     /**
      * Represents module credit.
@@ -91,12 +87,8 @@ public class ModuleInfo {
 
         ModuleInfoRetriever(String path) {
             try {
-                URL resource = MainApp.class.getResource(path);
-                String text = Resources.toString(resource, Charsets.UTF_8);
-
-                moduleInfoList = JsonUtil.fromJsonString(text, ModuleInfo[].class);
-
-                moduleInfoList = finalizeModuleInfo(moduleInfoList);
+                moduleInfoList = JsonUtil.readJsonResourceFile(path, ModuleInfo[].class);
+                finalizeModuleInfo(moduleInfoList);
             } catch (IOException e) {
                 logger.warning("Problem while reading from resource file. "
                     + "Will be starting with an empty module database");
@@ -122,7 +114,7 @@ public class ModuleInfo {
          *
          * @param moduleInfo List of {@code ModuleInfo}s deserialized by JSON parser.
          */
-        public ModuleInfo[] finalizeModuleInfo(ModuleInfo[] moduleInfo) {
+        public void finalizeModuleInfo(ModuleInfo[] moduleInfo) {
             ImmutableMap.Builder<String, ModuleInfo> builder = ImmutableMap.builder();
             for (ModuleInfo mInfo : moduleInfo) {
                 builder.put(mInfo.getCode(), mInfo);
@@ -133,7 +125,6 @@ public class ModuleInfo {
             for (ModuleInfo mInfo : moduleInfo) {
                 mInfo.finalize(codeToModuleInfoMap);
             }
-            return moduleInfo;
         }
     }
 
@@ -143,6 +134,10 @@ public class ModuleInfo {
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public float getCreditCount() {
