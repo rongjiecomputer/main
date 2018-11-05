@@ -39,6 +39,15 @@ public class Module implements Comparable<Module> {
     }
 
     /**
+     * Gets the (@code Module) information.
+     *
+     * @return the (@code Module) information.
+     */
+    public ModuleInfo getInfo() {
+        return information;
+    }
+
+    /**
      * Gets the {@code Module} code.
      *
      * @return The {@code Module} code

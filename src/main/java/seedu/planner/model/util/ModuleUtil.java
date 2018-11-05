@@ -1,5 +1,7 @@
 package seedu.planner.model.util;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import seedu.planner.model.module.Module;
@@ -9,7 +11,7 @@ import seedu.planner.model.module.ModuleInfo;
  * Helper functions for handling module.
  */
 public class ModuleUtil {
-    public static final String MODULE_CODE_REGEX = "^[A-Z]{2,3}\\d{4}[A-Z]{0,2}$";
+    private static final String MODULE_CODE_REGEX = "^[A-Z]{2,3}\\d{4}[A-Z]{0,2}$";
 
     //@@author GabrielYik
 
@@ -37,22 +39,28 @@ public class ModuleUtil {
      * @param moduleToCheck The {@code Module} to be checked.
      * @return True if all the prerequisites have been taken.
      */
-    private static boolean hasFulfilledAnyPrerequisites(List<Module> modulesTaken, Module moduleToCheck) {
+    public static boolean hasFulfilledAllPrerequisites(List<Module> modulesTaken, Module moduleToCheck) {
         List<ModuleInfo> prerequisites = moduleToCheck.getPrerequisites();
+        List<List<ModuleInfo>> groupedByEquivalence = groupModuleInfosByEquivalence(prerequisites);
 
-        if (prerequisites.isEmpty()) {
-            return true;
-        }
+        for (List<ModuleInfo> equivalence : groupedByEquivalence) {
+            boolean isOneNotContained = true;
 
-        for (ModuleInfo p: prerequisites) {
-            Module m = new Module(p.getCode());
+            for (ModuleInfo moduleInfo : equivalence) {
+                Module toModule = new Module(moduleInfo.getCode());
 
-            if (modulesTaken.contains(m)) {
-                return true;
+                if (modulesTaken.contains(toModule)) {
+                    isOneNotContained = false;
+                }
+
+            }
+
+            if (isOneNotContained) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -85,9 +93,123 @@ public class ModuleUtil {
      * @return True if all the prerequisites are fulfilled and no preclusion has been fulfilled.
      */
     public static boolean isModuleAvailableToTake(List<Module> modulesTaken, List<Module> modulesTakenUntilIndex,
-        Module module) {
+                                                  Module module) {
         return hasNotTakenModule(modulesTaken, module)
-            && hasFulfilledAnyPrerequisites(modulesTakenUntilIndex, module)
-            && hasNotFulfilledAnyPreclusions(modulesTaken, module);
+                && hasFulfilledAllPrerequisites(modulesTakenUntilIndex, module)
+                && hasNotFulfilledAnyPreclusions(modulesTaken, module);
     }
+
+    //@@author RomaRomama
+
+    /**
+     * Extracts the equivalent modules of the head of the list.
+     *
+     * @param modules list of modules
+     * @return List of all modules equivalent to the head
+     */
+    private static List<ModuleInfo> extractHeadEquivalent(List<ModuleInfo> modules) {
+        Iterator<ModuleInfo> iter1 = modules.iterator();
+        List<ModuleInfo> equivalence = new ArrayList<>();
+
+        while (iter1.hasNext()) {
+            ModuleInfo current = iter1.next();
+
+            if (equivalence.isEmpty()) {
+                equivalence.add(current);
+                iter1.remove();
+            } else {
+                Iterator<ModuleInfo> iter2 = equivalence.iterator();
+                List<ModuleInfo> toAdd = new ArrayList<>();
+
+                while (iter2.hasNext() && toAdd.size() == 0) {
+                    ModuleInfo toCompare = iter2.next();
+                    List<ModuleInfo> preclusions1 = current.getPreclusions();
+                    List<ModuleInfo> preclusions2 = toCompare.getPreclusions();
+
+                    if (preclusions1.contains(toCompare) || preclusions2.contains(current)) {
+                        toAdd.add(current);
+                        iter1.remove();
+                    }
+                }
+
+                equivalence.addAll(toAdd);
+            }
+        }
+
+        return equivalence;
+    }
+    /**
+     * Finds all equivalent moduleinfos from a given set of moduleinfos.
+     *
+     * @param moduleInfoList List of {@code ModuleInfo}s.
+     * @return The equivalence classes without the single ones.
+     */
+    private static List<List<ModuleInfo>> findModuleInfoEquivalences(List<ModuleInfo> moduleInfoList) {
+        List<ModuleInfo> copyModuleInfoList = new ArrayList<>(moduleInfoList);
+        List<List<ModuleInfo>> equivalenceSet = new ArrayList<>();
+
+        while (copyModuleInfoList.size() > 0) {
+            List<ModuleInfo> equivalence = extractHeadEquivalent(copyModuleInfoList);
+            copyModuleInfoList.removeAll(equivalence);
+            if (equivalence.size() > 1) {
+                equivalenceSet.add(equivalence);
+            }
+        }
+
+        return equivalenceSet;
+    }
+
+    /**
+     * Returns the grouping of equivalent moduleinfos and also include single moduleinfos.
+     *
+     * @param moduleInfoList List of (@code ModuleInfo)s.
+     * @return The equivalence classes including the single ones.
+     */
+    private static List<List<ModuleInfo>> groupModuleInfosByEquivalence(List<ModuleInfo> moduleInfoList) {
+        List<ModuleInfo> copyModuleInfoList = new ArrayList<>(moduleInfoList);
+        List<List<ModuleInfo>> allEquivalence = findModuleInfoEquivalences(moduleInfoList);
+
+        for (List<ModuleInfo> equivalence : allEquivalence) {
+            copyModuleInfoList.removeAll(equivalence);
+        }
+
+        for (ModuleInfo singleModule : copyModuleInfoList) {
+            List<ModuleInfo> singleList = new ArrayList<>();
+            singleList.add(singleModule);
+            allEquivalence.add(singleList);
+        }
+
+        return allEquivalence;
+    }
+
+    /**
+     * A module version for finding the equivalence classes.
+     *
+     * @param moduleList List of (@code Modules).
+     * @return Equivalence classes without the single ones.
+     */
+    public static List<List<Module>> findModuleEquivalences(List<Module> moduleList) {
+        List<ModuleInfo> toModuleInfo = new ArrayList<>();
+
+        for (Module module : moduleList) {
+            toModuleInfo.add(module.getInfo());
+        }
+
+        List<List<ModuleInfo>> toModuleInfoList = ModuleUtil.findModuleInfoEquivalences(toModuleInfo);
+        List<List<Module>> toModuleList = new ArrayList<>();
+
+        for (List<ModuleInfo> moduleInfoList : toModuleInfoList) {
+            List<Module> toModule = new ArrayList<>();
+
+            for (ModuleInfo moduleInfo : moduleInfoList) {
+                toModule.add(new Module(moduleInfo.getCode()));
+            }
+
+            toModuleList.add(toModule);
+        }
+
+        return toModuleList;
+    }
+
+    //@@author
 }
