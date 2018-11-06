@@ -29,6 +29,7 @@ import seedu.planner.commons.events.ui.ClearEvent;
 import seedu.planner.commons.events.ui.ExitAppRequestEvent;
 import seedu.planner.commons.events.ui.FindModuleEvent;
 import seedu.planner.commons.events.ui.GoToEvent;
+import seedu.planner.commons.events.ui.ListModuleEvent;
 import seedu.planner.commons.events.ui.ShowHelpRequestEvent;
 import seedu.planner.commons.events.ui.SuggestModuleEvent;
 import seedu.planner.logic.Logic;
@@ -164,7 +165,7 @@ public class MainWindow extends UiPart<Stage> {
      * taken module panel.
      */
     private void initTakenModulesPanel() {
-        takenModuleListPanels = new ArrayList<>(MAX_NUMBER_SEMESTERS);
+        takenModuleListPanels = new ArrayList<>(MAX_NUMBER_SEMESTERS + 1);
 
         for (int semesterIndex = 0; semesterIndex < MAX_NUMBER_SEMESTERS; semesterIndex++) {
             ObservableList<Module> modules = logic.getTakenModules(semesterIndex);
@@ -172,6 +173,11 @@ public class MainWindow extends UiPart<Stage> {
                     semesterIndex, ModulePanelType.TAKEN);
             takenModuleListPanels.add(semesterIndex, takenModuleListPanel);
         }
+
+        ObservableList<Module> modules = logic.listModules();
+        ModuleListPanel takenModuleListPanel = new ModuleListPanel(modules, TIMELESS, ModulePanelType.TAKEN).timeless();
+        takenModuleListPanels.add(MAX_NUMBER_SEMESTERS, takenModuleListPanel);
+
         timelessTakenModuleListPanel = new ModuleListPanel(FXCollections.emptyObservableList(),
                 TIMELESS, ModulePanelType.TAKEN).timeless();
 
@@ -297,5 +303,11 @@ public class MainWindow extends UiPart<Stage> {
         ModuleListPanel panel = new ModuleListPanel(event.getModuleList(),
                 event.getIndex(), ModulePanelType.SUGGESTED);
         setPlaceholder(suggestedModulesPlaceholder, panel);
+    }
+
+    @Subscribe
+    private void handleListEvent(ListModuleEvent event) {
+        ModuleListPanel panel = takenModuleListPanels.get(MAX_NUMBER_SEMESTERS);
+        setPlaceholder(takenModulesPlaceholder, panel);
     }
 }

@@ -13,6 +13,7 @@ import seedu.planner.model.module.Module;
 import seedu.planner.model.module.ModuleInfo;
 import seedu.planner.model.semester.Semester;
 import seedu.planner.model.user.UserProfile;
+import seedu.planner.model.util.IndexUtil;
 import seedu.planner.model.util.ModuleUtil;
 
 //@@author Hilda-Ang
@@ -29,6 +30,7 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
     private UserProfile userProfile;
 
     private final ObservableList<Module> availableModules = FXCollections.observableArrayList();
+    private final ObservableList<Module> takenModules = FXCollections.observableArrayList();
 
     private int index;
 
@@ -220,6 +222,39 @@ public class ModulePlanner implements ReadOnlyModulePlanner {
     public ObservableList<Module> getTakenModules(int index) {
         return FXCollections.unmodifiableObservableList(
                 semesters.get(index).getModules());
+    }
+
+    /**
+     * Updates {@code modulesTaken} to contain all modules user has taken for every semester.
+     */
+    public void listTakenModulesAll() {
+        List<Module> modules = new ArrayList<>();
+        for (Semester s: semesters) {
+            modules.addAll(s.getModules());
+        }
+        setTakenModules(modules);
+    }
+
+    /**
+     * Updates {@code modulesTaken} to contain all modules user has taken in a given year.
+     *
+     * @param year An integer between 1 to 4.
+     */
+    public void listTakenModulesYear(int year) {
+        int[] indices = IndexUtil.getIndicesFromYear(year);
+        List<Module> modules = new ArrayList<>();
+        for (int i = 0; i < indices.length; i++) {
+            modules.addAll(semesters.get(indices[i]).getModules());
+        }
+        setTakenModules(modules);
+    }
+
+    public ObservableList<Module> listTakenModules() {
+        return takenModules;
+    }
+
+    private void setTakenModules(List<Module> modules) {
+        takenModules.setAll(modules);
     }
 
     /**
