@@ -174,7 +174,6 @@ Format: `list [y/YEAR]`
 
 [NOTE]
 ====
-* A valid year must be an integer from 1 to 4 inclusive.
 * If no modules have been added to a specified year or no modules have been added to ModulePlanner, will show an empty list.
 ====
 
@@ -218,12 +217,6 @@ this feature will only give you generic module suggestion sorted in lexicographi
 ====
 * This command is NOT undoable.
 * The list of suggested modules will be automatically updated upon adding or deleting module(s).
-====
-
-[NOTE]
-====
-* A valid year must be an integer from 1 to 4 inclusive.
-* A valid semester is either 1 or 2.
 ====
 
 Examples:
