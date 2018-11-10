@@ -13,10 +13,13 @@ import java.util.logging.Logger;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.collections.transformation.SortedList;
+
 import seedu.planner.commons.core.ComponentManager;
 import seedu.planner.commons.core.LogsCenter;
 import seedu.planner.commons.events.model.ModulePlannerChangedEvent;
+import seedu.planner.model.course.DegreeRequirement;
 import seedu.planner.model.module.Module;
 import seedu.planner.model.module.ModuleInfo;
 import seedu.planner.model.module.ModuleType;
@@ -132,6 +135,12 @@ public class ModelManager extends ComponentManager implements Model {
         versionedModulePlanner.addModules(finalizedModules, index);
         indicateModulePlannerChanged();
     }
+
+    public ObservableMap<DegreeRequirement, int[]> getStatus() {
+        return versionedModulePlanner.getStatus();
+    }
+
+    //@@author Hilda-Ang
 
     @Override
     public void suggestModules(int index) {

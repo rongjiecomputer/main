@@ -33,6 +33,7 @@ import seedu.planner.commons.events.ui.FindModuleEvent;
 import seedu.planner.commons.events.ui.GoToEvent;
 import seedu.planner.commons.events.ui.ListModulesEvent;
 import seedu.planner.commons.events.ui.ShowHelpRequestEvent;
+import seedu.planner.commons.events.ui.StatusEvent;
 import seedu.planner.commons.events.ui.SuggestModulesEvent;
 import seedu.planner.logic.Logic;
 import seedu.planner.model.UserPrefs;
@@ -322,5 +323,11 @@ public class MainWindow extends UiPart<Stage> {
             panel.setSubTitle("Year " + event.getYear());
         }
         setPlaceholder(takenModulesPlaceholder, panel);
+    }
+
+    @Subscribe
+    private void handleStatusEvent(StatusEvent event) {
+        StatusPanel panel = new StatusPanel(event.getStatusMessage());
+        setPlaceholder(multiPurposePanelPlaceholder, panel);
     }
 }
