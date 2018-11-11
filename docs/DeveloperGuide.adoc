@@ -256,7 +256,7 @@ This section describes some noteworthy details on how certain features are imple
 === Add feature
 ==== Current Implementation
 
-The add mechanism is facilitated by 'ModulePlanner'. 'ModulePlanner' stores a list of all 'Semester'-s. A 'Semester' stores a list containing modules that the user has taken or is planning to take on that semester.
+The add mechanism is facilitated by 'ModulePlanner'. 'ModulePlanner' stores a list of all 'Semester's. A 'Semester' stores a list containing modules that the user has taken or is planning to take on that semester.
 The implementation is as follows:
 
 * `ModulePlanner#addModules(List<Module> modules, int index)` -- Add the list of `modules` into the semester specified by `index`.
@@ -468,21 +468,21 @@ support years beyond the 4th.
 === List feature
 ==== Current Implementation
 
-The list mechanism is facilitated by `ModulePlanner`. `ModulePlanner` stores a list of all `Semester`-s and each `Semester` stores a list `modulesTaken` containing modules that the user has taken or is planning to take.
+The list mechanism is facilitated by `ModulePlanner`. `ModulePlanner` stores a list of all `Semester`s and each `Semester` stores a list `modulesTaken` containing modules that the user has taken or is planning to take.
 It implements the following operation:
 
-* `ModulePlanner#listTakenModules()` -- Retrieves the list `takenModules`.
+* `ModulePlanner#getTakenModules()` -- Retrieves the list `takenModules`.
 * `ModulePlanner#listTakenModulesAll()` -- Updates `takenModules` to contain a list of modules retrieved from the list `modulesTaken` in every `Semester`.
-* `ModulePlanner#listTakenModulesForYear(int year)` -- Updates `takenModules` to contain a list of modules retrieved from the list `modulesTaken` in the `Semester`-s that belongs to the specified year.
+* `ModulePlanner#listTakenModulesForYear(int year)` -- Updates `takenModules` to contain a list of modules retrieved from the list `modulesTaken` in the `Semester`s that belongs to the specified year.
 
-The operation is exposed in `Model` interface as `Model#listTakenModules()`, `Model#listTakenModulesAll()`, and `Model#listTakenModulesForYear(int year)`.
+The operation is exposed in `Model` interface as `Model#getTakenModules()`, `Model#listTakenModulesAll()`, and `Model#listTakenModulesForYear(int year)`.
 
 [NOTE]
 A valid index should be an integer between 0 to 7 inclusive, where index 0 represents year 1 semester 1, index 1 represents year 1 semester 2, index 2 represents year 2 semester 1, and so on.
 
 Below is an example usage scenario and how the list mechanism works.
 
-Step 1. User launches the application. `ModulePlanner` is initialised with 8 `Semester` objects in `List<Module> semesters`.
+Step 1. User launches the application. `ModulePlanner` is initialised with 8 `Semester` objects in a list `semesters`.
 
 Step 2. User executes `add y/1 s/1 c/CS1231`. The `add` command inserts `Module` CS1231 to the list `modulesTaken` for `Semester` object with index 0.
 
@@ -517,7 +517,7 @@ image::ListSequenceDiagram_2.png[width="800"]
 
 The suggest mechanism displays a list of modules available in the specified index to the user, where index represents the year and semester that the user is asking suggestions for.
 It is supported by an internal list `availableModules` in `ModulePlanner`, which is regenerated after every successful execution of commands that modify `ModulePlanner` (`add`, `delete`, `clear`, etc.) and `suggest` command.
-The list `availableModules` can be retrieved through `Model#getAvailableList` using `suggest` command, which takes in one argument: a valid index that corresponds to a specific year and semester.
+The list `availableModules` can be retrieved through `Model#getAvailableList()` using `suggest` command, which (`suggest` command) takes in one argument: a valid index that corresponds to a specific year and semester.
 
 [NOTE]
 A valid index should be an integer between 0 to 7 inclusive, where index 0 represents year 1 semester 1, index 1 represents year 1 semester 2, index 2 represents year 2 semester 1, and so on.
@@ -535,7 +535,7 @@ Only `suggest` command will change the index (year and semester) to be displayed
 
 Below is how the list of available modules is generated.
 
-The method `ModulePlanner#generateAvailableModules(int index)` is called by `ModulePlanner#updateModulesAvailable`, which sets the content of `availableModules` to be the list of modules returned by `generateAvailableModules(index)`, with index being  the stored `availableIndex`.
+The method `ModulePlanner#generateAvailableModules(int index)` is called by `ModulePlanner#updateModulesAvailable()`, which sets the content of `availableModules` to be the list of modules returned by `generateAvailableModules(index)`, with `index` being the stored `availableIndex`.
 
 ----
 private List<Module> generateAvailableModules(int index) {
@@ -545,7 +545,7 @@ private List<Module> generateAvailableModules(int index) {
     List<Module> allModules = getAllModulesFromStorage();
 
     for (Module m : allModules) {
-        if (ModuleUtil.isModuleAvailableToTake(modulesTaken, modulesTakenBeforeIndex, m)) {
+        if (ModuleUtil.isModuleAvailable(modulesTaken, modulesTakenBeforeIndex, m)) {
             modulesAvailable.add(m);
         }
     }
@@ -556,7 +556,11 @@ private List<Module> generateAvailableModules(int index) {
 }
 ----
 
-The method `generateAvailableModules` retrieves all modules from the storage and performs availability checking on each of them. The available modules are put into a list which is then sorted such that core modules are put on top, followed by general education modules and unrestricted electives.
+The method `ModulePlanner#generateAvailableModules(int index)` retrieves all modules from the storage and performs availability checking on each of them. The available modules are put into a list which is then sorted:
+
+** in a lexicographical order if user has specified a major other than *Computer Science* through `setup` command, or
+** such that core modules for *Computer Science* major are put on top, followed by general education modules and unrestricted electives.
+
 The availability checking is done by the following method.
 
 ----
@@ -586,6 +590,7 @@ image::SuggestSequenceDiagram.png[width="800"]
 * **Alternative 2:** Regenerates list of available module only after successful execution of commands that modify the content of the list of available modules.
 ** Pros: May be more effective in terms of running time because it only regenerates the list when needed.
 ** Cons: Implementation will be more complicated as we have to check whether a command modifies the list.
+
 
 // tag::undoredo[]
 === Undo/Redo feature
