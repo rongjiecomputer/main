@@ -8,12 +8,12 @@ import seedu.planner.model.module.Module;
 /**
  * An event to display list of modules available in response to suggest command.
  */
-public class SuggestModulesEvent extends BaseEvent {
+public class SuggestEvent extends BaseEvent {
     private final ObservableList<Module> moduleList;
 
     private final int index;
 
-    public SuggestModulesEvent(ObservableList<Module> moduleList, int index) {
+    public SuggestEvent(ObservableList<Module> moduleList, int index) {
         this.moduleList = moduleList;
         this.index = index;
     }

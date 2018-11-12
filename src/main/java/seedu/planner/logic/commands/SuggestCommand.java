@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import seedu.planner.commons.core.EventsCenter;
 import seedu.planner.commons.core.LogsCenter;
 import seedu.planner.commons.core.Messages;
-import seedu.planner.commons.events.ui.SuggestModulesEvent;
+import seedu.planner.commons.events.ui.SuggestEvent;
 import seedu.planner.logic.CommandHistory;
 import seedu.planner.logic.commands.exceptions.CommandException;
 import seedu.planner.model.Model;
@@ -57,9 +57,9 @@ public class SuggestCommand extends Command {
 
         model.suggestModules(index);
         logger.info("suggested modules for index " + index);
-        EventsCenter.getInstance().post(new SuggestModulesEvent(model.getAvailableModules(), index));
+        EventsCenter.getInstance().post(new SuggestEvent(model.getAvailableModules(), index));
 
-        return new CommandResult(String.format(MESSAGE_SUCCESS, index));
+        return new CommandResult(MESSAGE_SUCCESS);
     }
 
     @Override

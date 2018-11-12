@@ -18,7 +18,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import seedu.planner.commons.core.Messages;
-import seedu.planner.commons.events.ui.ListModulesEvent;
+import seedu.planner.commons.events.ui.ListEvent;
 import seedu.planner.logic.CommandHistory;
 import seedu.planner.logic.commands.exceptions.CommandException;
 import seedu.planner.model.Model;
@@ -55,7 +55,7 @@ public class ListCommandTest {
         assertCommandSuccess(listCommand, model, commandHistory, expectedMessage, expectedModel);
         assertEquals(showModuleTakenAtIndex(model, INDEX_ZERO),
                      getTypicalModulePlanner().getTakenModules().get(INDEX_ZERO));
-        assertTrue(eventsCollectorRule.eventsCollector.getMostRecent() instanceof ListModulesEvent);
+        assertTrue(eventsCollectorRule.eventsCollector.getMostRecent() instanceof ListEvent);
         assertEquals(eventsCollectorRule.eventsCollector.getSize(), 1);
     }
 
@@ -67,7 +67,7 @@ public class ListCommandTest {
         assertCommandSuccess(listCommand, model, commandHistory, expectedMessage, expectedModel);
         assertEquals(showModuleTakenAtIndex(model, INDEX_ZERO),
                      getTypicalModulePlanner().getTakenModules().get(INDEX_ZERO));
-        assertTrue(eventsCollectorRule.eventsCollector.getMostRecent() instanceof ListModulesEvent);
+        assertTrue(eventsCollectorRule.eventsCollector.getMostRecent() instanceof ListEvent);
         assertEquals(eventsCollectorRule.eventsCollector.getSize(), 1);
     }
 
@@ -79,7 +79,7 @@ public class ListCommandTest {
         assertCommandSuccess(listCommand, model, commandHistory, expectedMessage, expectedModel);
         assertEquals(showModuleTakenAtIndex(model, INDEX_ZERO),
                      null);
-        assertTrue(eventsCollectorRule.eventsCollector.getMostRecent() instanceof ListModulesEvent);
+        assertTrue(eventsCollectorRule.eventsCollector.getMostRecent() instanceof ListEvent);
         assertEquals(eventsCollectorRule.eventsCollector.getSize(), 1);
     }
 

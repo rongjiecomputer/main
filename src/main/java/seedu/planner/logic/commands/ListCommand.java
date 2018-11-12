@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 import seedu.planner.commons.core.EventsCenter;
 import seedu.planner.commons.core.LogsCenter;
 import seedu.planner.commons.core.Messages;
-import seedu.planner.commons.events.ui.ListModulesEvent;
+import seedu.planner.commons.events.ui.ListEvent;
 import seedu.planner.logic.CommandHistory;
 import seedu.planner.logic.commands.exceptions.CommandException;
 import seedu.planner.model.Model;
@@ -54,7 +54,7 @@ public class ListCommand extends Command {
         if (year == VALUE_NOT_AVAILABLE) {
             model.listTakenModulesAll();
             logger.info("listed modules for all years");
-            EventsCenter.getInstance().post(new ListModulesEvent(year));
+            EventsCenter.getInstance().post(new ListEvent(year));
             return new CommandResult(MESSAGE_SUCCESS_ALL);
         }
 
@@ -66,7 +66,7 @@ public class ListCommand extends Command {
         // Lists modules taken for a specific year if a valid year is supplied.
         model.listTakenModulesForYear(year);
         logger.info("listed modules for year " + year);
-        EventsCenter.getInstance().post(new ListModulesEvent(year));
+        EventsCenter.getInstance().post(new ListEvent(year));
         return new CommandResult(String.format(MESSAGE_SUCCESS_YEAR, year));
     }
 

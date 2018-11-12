@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import seedu.planner.commons.core.Messages;
-import seedu.planner.commons.events.ui.SuggestModulesEvent;
+import seedu.planner.commons.events.ui.SuggestEvent;
 import seedu.planner.logic.CommandHistory;
 import seedu.planner.logic.commands.exceptions.CommandException;
 import seedu.planner.model.Model;
@@ -41,7 +41,7 @@ public class SuggestCommandTest {
         assertCommandSuccess(suggestCommand, model, commandHistory, SuggestCommand.MESSAGE_SUCCESS, expectedModel);
         assertEquals(showModuleAvailableAtIndex(model, INDEX_ZERO),
                      getTypicalModulePlanner().getTakenModules().get(INDEX_ZERO));
-        assertTrue(eventsCollectorRule.eventsCollector.getMostRecent() instanceof SuggestModulesEvent);
+        assertTrue(eventsCollectorRule.eventsCollector.getMostRecent() instanceof SuggestEvent);
         assertEquals(eventsCollectorRule.eventsCollector.getSize(), 1);
     }
 
